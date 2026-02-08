@@ -1,8 +1,25 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-let textContent = "Initial message from User 2";
+// In-memory storage (resets on deployment)
+let textContent: string | null = null;
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
+async function getInitialContent() {
+  if (textContent === null) {
+    try {
+      // Fetch initial content from GitHub
+      const response = await fetch(
+        'https://raw.githubusercontent.com/priandoyo/react-frontend-workshop/main/public/text2.txt'
+      );
+      textContent = await response.text();
+    } catch (error) {
+      textContent = "Error loading from GitHub";
+    }
+  }
+  return textContent;
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -12,10 +29,13 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (req.method === 'GET') {
-    return res.status(200).json({ text: textContent });
+    // Get content (from memory or GitHub)
+    const content = await getInitialContent();
+    return res.status(200).json({ text: content });
   }
 
   if (req.method === 'POST') {
+    // Update text in memory
     const { text } = req.body;
     if (text) {
       textContent = text;
