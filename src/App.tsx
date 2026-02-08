@@ -19,8 +19,8 @@ export default function App() {
 
   return (
     <div style={{ textAlign: "center", marginTop: 40 }}>
-      <h1>Hello World Frontend Workshop: Chaching issues fixed</h1>
-
+      <h2>Hello World Frontend Workshop: Chaching issues fixed</h2>
+      <h3>Chaching issues fixed with happiness</h3>
       <h2>Text From Files</h2>
       <p>{text1}</p>
       <p>{text2}</p>
