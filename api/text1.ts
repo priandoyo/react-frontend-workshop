@@ -12,7 +12,8 @@ async function getInitialContent() {
       );
       textContent = await response.text();
     } catch (error) {
-      textContent = "Error loading from GitHub";
+      console.error('Error loading from GitHub:', error);
+      textContent = "Error loading initial content from GitHub";
     }
   }
   return textContent;
@@ -29,15 +30,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (req.method === 'GET') {
-    // Get content (from memory or GitHub)
+    // Get content (from memory or load from GitHub on first request)
     const content = await getInitialContent();
     return res.status(200).json({ text: content });
   }
 
   if (req.method === 'POST') {
-    // Update text in memory
+    // Update text in memory (live update)
     const { text } = req.body;
-    if (text) {
+    if (text !== undefined) {
       textContent = text;
       return res.status(200).json({ success: true, text: textContent });
     }
