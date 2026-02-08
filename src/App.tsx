@@ -25,10 +25,27 @@ export default function App() {
     });
   };
 
+  const handleReset = () => {
+    if (confirm('Reset both messages to original content from GitHub?')) {
+      Promise.all([
+        fetch('/api/text1', { method: 'DELETE' }),
+        fetch('/api/text2', { method: 'DELETE' })
+      ])
+      .then(() => {
+        fetchContent();
+        alert('Messages reset to original! ✅');
+      })
+      .catch(err => {
+        console.error('Reset failed:', err);
+        alert('Reset failed ❌');
+      });
+    }
+  };
+
   useEffect(() => {
     fetchContent();
     
-    // Auto-refresh every 5 seconds (faster now!)
+    // Auto-refresh every 5 seconds
     const interval = setInterval(fetchContent, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -52,21 +69,39 @@ export default function App() {
             Last updated: {lastUpdated.toLocaleTimeString()}
           </p>
         )}
-        <button 
-          onClick={fetchContent}
-          style={{
-            marginTop: "12px",
-            padding: "8px 16px",
-            background: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontSize: "14px"
-          }}
-        >
-          🔄 Refresh Content
-        </button>
+        
+        <div style={{ marginTop: "12px" }}>
+          <button 
+            onClick={fetchContent}
+            style={{
+              padding: "8px 16px",
+              background: "#4CAF50",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "14px",
+              marginRight: "8px"
+            }}
+          >
+            🔄 Refresh Content
+          </button>
+          
+          <button 
+            onClick={handleReset}
+            style={{
+              padding: "8px 16px",
+              background: "#ff6b6b",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "14px"
+            }}
+          >
+            🔄 Reset to Original
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -136,13 +171,21 @@ export default function App() {
       }}>
         <strong>Workshop Instructions:</strong>
         <br />
-        Use the browser console or API tools to update messages:
+        <strong>Step 1:</strong> Press F12 → Click "Console" tab
         <br />
-        <code style={{ background: "#fff", padding: "4px 8px", borderRadius: "4px", fontSize: "12px" }}>
-          fetch('/api/text1', {'{'} method: 'POST', headers: {'{'}'Content-Type': 'application/json'{'}'}, body: JSON.stringify({'{'} text: 'Your message' {'}'}) {'}'})
+        <strong>Step 2:</strong> Type: <code style={{ background: "#fff", padding: "2px 6px" }}>allow pasting</code> and press Enter
+        <br />
+        <strong>Step 3:</strong> Copy and paste this code (change "Your Name"):
+        <br />
+        <code style={{ background: "#fff", padding: "8px", display: "block", margin: "8px 0", fontSize: "11px", textAlign: "left", overflowX: "auto" }}>
+          fetch('/api/text1', {'{'}method: 'POST', headers: {'{'}
+          'Content-Type': 'application/json'{'}'}, body: JSON.stringify({'{'}text: 'Hello from [Your Name]!'{'}'}){'}'}
         </code>
+        <strong>Step 4:</strong> Press Enter and wait 5 seconds to see your message!
         <br />
-        <small style={{ color: "#999" }}>Content refreshes automatically every 5 seconds</small>
+        <small style={{ color: "#999" }}>
+          Content refreshes automatically every 5 seconds • Use "Reset to Original" button to restore default messages
+        </small>
       </div>
     </div>
   );
