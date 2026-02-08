@@ -8,16 +8,14 @@ export default function App() {
 
   const fetchContent = () => {
     setLoading(true);
-    const baseUrl = "https://raw.githubusercontent.com/priandoyo/react-frontend-workshop/main/public";
-    const cacheBuster = `?t=${new Date().getTime()}`;
     
     Promise.all([
-      fetch(`${baseUrl}/text1.txt${cacheBuster}`).then(res => res.text()),
-      fetch(`${baseUrl}/text2.txt${cacheBuster}`).then(res => res.text())
+      fetch('/api/text1').then(res => res.json()),
+      fetch('/api/text2').then(res => res.json())
     ])
     .then(([data1, data2]) => {
-      setText1(data1);
-      setText2(data2);
+      setText1(data1.text);
+      setText2(data2.text);
       setLastUpdated(new Date());
       setLoading(false);
     })
@@ -30,8 +28,8 @@ export default function App() {
   useEffect(() => {
     fetchContent();
     
-    // Auto-refresh every 10 seconds to show live updates
-    const interval = setInterval(fetchContent, 10000);
+    // Auto-refresh every 5 seconds (faster now!)
+    const interval = setInterval(fetchContent, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -43,21 +41,14 @@ export default function App() {
       fontFamily: "system-ui, -apple-system, sans-serif"
     }}>
       <div style={{ textAlign: "center", marginBottom: "40px" }}>
-        <h1 style={{ 
-          color: "#333",
-          marginBottom: "10px"
-        }}>
-          🎓 Frontend Workshop v1.2
+        <h1 style={{ color: "#333", marginBottom: "10px" }}>
+          🎓 Frontend Workshop
         </h1>
         <p style={{ color: "#666", fontSize: "14px" }}>
-          Live content collaboration demo
+          Live content collaboration demo with API
         </p>
         {lastUpdated && (
-          <p style={{ 
-            color: "#999", 
-            fontSize: "12px",
-            marginTop: "8px"
-          }}>
+          <p style={{ color: "#999", fontSize: "12px", marginTop: "8px" }}>
             Last updated: {lastUpdated.toLocaleTimeString()}
           </p>
         )}
@@ -79,27 +70,13 @@ export default function App() {
       </div>
 
       {loading ? (
-        <div style={{ 
-          textAlign: "center", 
-          padding: "60px 20px",
-          color: "#666"
-        }}>
-          <div style={{ 
-            fontSize: "18px",
-            marginBottom: "12px"
-          }}>
-            ⏳ Loading content from GitHub...
-          </div>
-          <div style={{ fontSize: "14px", color: "#999" }}>
-            Fetching latest updates
+        <div style={{ textAlign: "center", padding: "60px 20px", color: "#666" }}>
+          <div style={{ fontSize: "18px", marginBottom: "12px" }}>
+            ⏳ Loading content...
           </div>
         </div>
       ) : (
-        <div style={{ 
-          display: "grid", 
-          gap: "24px",
-          marginBottom: "40px"
-        }}>
+        <div style={{ display: "grid", gap: "24px", marginBottom: "40px" }}>
           {/* User 1's Message */}
           <div style={{
             background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -108,19 +85,10 @@ export default function App() {
             boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
             color: "white"
           }}>
-            <div style={{ 
-              fontSize: "12px", 
-              fontWeight: "600",
-              marginBottom: "8px",
-              opacity: 0.9
-            }}>
+            <div style={{ fontSize: "12px", fontWeight: "600", marginBottom: "8px", opacity: 0.9 }}>
               👤 USER 1
             </div>
-            <div style={{ 
-              fontSize: "18px",
-              lineHeight: "1.6",
-              whiteSpace: "pre-wrap"
-            }}>
+            <div style={{ fontSize: "18px", lineHeight: "1.6", whiteSpace: "pre-wrap" }}>
               {text1 || "No message yet..."}
             </div>
           </div>
@@ -133,29 +101,17 @@ export default function App() {
             boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
             color: "white"
           }}>
-            <div style={{ 
-              fontSize: "12px", 
-              fontWeight: "600",
-              marginBottom: "8px",
-              opacity: 0.9
-            }}>
+            <div style={{ fontSize: "12px", fontWeight: "600", marginBottom: "8px", opacity: 0.9 }}>
               👤 USER 2
             </div>
-            <div style={{ 
-              fontSize: "18px",
-              lineHeight: "1.6",
-              whiteSpace: "pre-wrap"
-            }}>
+            <div style={{ fontSize: "18px", lineHeight: "1.6", whiteSpace: "pre-wrap" }}>
               {text2 || "No message yet..."}
             </div>
           </div>
         </div>
       )}
 
-      <div style={{ 
-        textAlign: "center",
-        marginTop: "60px"
-      }}>
+      <div style={{ textAlign: "center", marginTop: "60px" }}>
         <h2 style={{ color: "#333", marginBottom: "20px" }}>Sample Image</h2>
         <img 
           src="/puncak.jpg" 
@@ -180,11 +136,13 @@ export default function App() {
       }}>
         <strong>Workshop Instructions:</strong>
         <br />
-        Edit <code>text1.txt</code> or <code>text2.txt</code> in GitHub to see live updates!
+        Use the browser console or API tools to update messages:
         <br />
-        <small style={{ color: "#999" }}>
-          Content refreshes automatically every 10 seconds
-        </small>
+        <code style={{ background: "#fff", padding: "4px 8px", borderRadius: "4px", fontSize: "12px" }}>
+          fetch('/api/text1', {'{'} method: 'POST', headers: {'{'}'Content-Type': 'application/json'{'}'}, body: JSON.stringify({'{'} text: 'Your message' {'}'}) {'}'})
+        </code>
+        <br />
+        <small style={{ color: "#999" }}>Content refreshes automatically every 5 seconds</small>
       </div>
     </div>
   );
