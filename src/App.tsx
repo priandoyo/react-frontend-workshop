@@ -23,7 +23,7 @@ export default function App() {
   return (
     <div style={{ textAlign: "center", marginTop: 40 }}>
       <h1>Hello World Frontend Workshop</h1>
-
+      <h1>Hello World Frontend Workshop: Simple modification</h1>
       <h2>Text From Files</h2>
       <p>{text1}</p>
       <p>{text2}</p>
