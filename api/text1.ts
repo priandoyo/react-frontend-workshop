@@ -22,7 +22,7 @@ async function getInitialContent() {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
   if (req.method === 'OPTIONS') {
@@ -43,6 +43,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ success: true, text: textContent });
     }
     return res.status(400).json({ error: 'No text provided' });
+  }
+
+  if (req.method === 'DELETE') {
+    // Reset to original from GitHub
+    textContent = null;
+    const content = await getInitialContent();
+    return res.status(200).json({ success: true, text: content, reset: true });
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
