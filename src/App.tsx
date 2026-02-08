@@ -5,18 +5,21 @@ export default function App() {
   const [text2, setText2] = useState("");
 
   useEffect(() => {
-    fetch("/text1.txt")
+    // Add timestamp to bypass cache
+    const cacheBuster = `?t=${new Date().getTime()}`;
+    
+    fetch(`/text1.txt${cacheBuster}`)
       .then(res => res.text())
       .then(data => setText1(data));
 
-    fetch("/text2.txt")
+    fetch(`/text2.txt${cacheBuster}`)
       .then(res => res.text())
       .then(data => setText2(data));
   }, []);
 
   return (
     <div style={{ textAlign: "center", marginTop: 40 }}>
-      <h1>Hello World Frontend Workshop</h1>
+      <h1>Hello World Frontend Workshop: Chaching issues fixed</h1>
 
       <h2>Text From Files</h2>
       <p>{text1}</p>
