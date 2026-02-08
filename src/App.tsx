@@ -47,7 +47,7 @@ export default function App() {
           color: "#333",
           marginBottom: "10px"
         }}>
-          🎓 Frontend Workshop v1
+          🎓 Frontend Workshop v1.2
         </h1>
         <p style={{ color: "#666", fontSize: "14px" }}>
           Live content collaboration demo
